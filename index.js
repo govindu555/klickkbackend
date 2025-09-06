@@ -17,22 +17,29 @@ mongoose.connect(process.env.mongodb_url)
 .then(()=>{
     console.log("mongodb is connecting...")
 })
-.catch(error=>{
+.catch(err=>{
     console.log("not connect...")
 })
 
 const userschema=new mongoose.Schema({
     name:String,
-    email:String,
+    email:{type:String,unique:true},
     password:String
 })
 
 const usermodel=mongoose.model("userdata",userschema)
 
 app.post("/useraccount",async(req,res)=>{
+    try{
     const data=new usermodel(req.body)
     await data.save()
     res.json()
+    }
+    catch(err){
+        const e="error"
+        res.json(e)
+    }
+   
 })
 
 app.get("/getdata",async(req,res)=>{
